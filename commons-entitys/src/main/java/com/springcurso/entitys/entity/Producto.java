@@ -1,17 +1,22 @@
-package com.formacionbdi.microservicios.app.producto.entity;
+package com.springcurso.entitys.entity;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "PRODUCTOS")
@@ -29,6 +34,11 @@ public class Producto {
 	@Column(name = "CREATE_AT")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
+
+	@JsonIgnoreProperties(value = {"productos"})
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="categoria_id")
+	private Categoria categoria;
 
 	@PrePersist
 	public void prePersist() {
@@ -89,6 +99,14 @@ public class Producto {
 	 */
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
-import com.formacionbdi.microservicios.app.producto.entity.Producto;
+import com.springcurso.entitys.entity.Producto;
 
 public interface ProductoService {
 	

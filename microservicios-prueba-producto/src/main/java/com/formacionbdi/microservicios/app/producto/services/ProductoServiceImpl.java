@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.formacionbdi.microservicios.app.producto.dao.ProductoDAO;
-import com.formacionbdi.microservicios.app.producto.entity.Producto;
+import com.springcurso.entitys.entity.Producto;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {

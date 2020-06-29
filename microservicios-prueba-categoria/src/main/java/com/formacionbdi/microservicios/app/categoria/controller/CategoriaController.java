@@ -1,6 +1,7 @@
-package com.formacionbdi.microservicios.app.producto.controller;
+package com.formacionbdi.microservicios.app.categoria.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,14 +20,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.formacionbdi.microservicios.app.producto.services.ProductoService;
+import com.formacionbdi.microservicios.app.categoria.service.CategoriaService;
+import com.springcurso.entitys.entity.Categoria;
 import com.springcurso.entitys.entity.Producto;
 
 @RestController
-public class ProductoController {
+public class CategoriaController {
 
 	@Autowired
-	private ProductoService service;
+	private CategoriaService service;
 
 	@GetMapping
 	public ResponseEntity<?> list() {
@@ -40,7 +42,7 @@ public class ProductoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> ver(@PathVariable Long id) {
-		Optional<Producto> o = service.findById(id);
+		Optional<Categoria> o = service.findById(id);
 		if (o.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
@@ -48,12 +50,12 @@ public class ProductoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> crear(@Valid @RequestBody Producto entity, BindingResult result) {
+	public ResponseEntity<?> crear(@Valid @RequestBody Categoria entity, BindingResult result) {
 
 		if (result.hasErrors()) {
 			return this.validar(result);
 		}
-		Producto entityDb = service.save(entity);
+		Categoria entityDb = service.save(entity);
 		return ResponseEntity.status(HttpStatus.CREATED).body(entityDb);
 	}
 
@@ -64,23 +66,43 @@ public class ProductoController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@Valid @RequestBody Producto entity, BindingResult result, @PathVariable Long id) {
+	public ResponseEntity<?> editar(@Valid @RequestBody Categoria entity, BindingResult result, @PathVariable Long id) {
 
 		if (result.hasErrors()) {
 			return this.validar(result);
 		}
 
-		Optional<Producto> optionalProductoDB = service.findById(id);
+		Optional<Categoria> optionalCategoriaDB = service.findById(id);
 
-		if (optionalProductoDB.isEmpty()) {
+		if (optionalCategoriaDB.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
-		Producto productoDB = optionalProductoDB.get();
-		productoDB.setNombre(entity.getNombre());
-		productoDB.setPrecio(entity.getPrecio());
+		Categoria CategoriaDB = optionalCategoriaDB.get();
+		CategoriaDB.setNombre(entity.getNombre());
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(productoDB));
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(CategoriaDB));
+	}
+	
+	@PutMapping("/asociar-productos/{id}")
+	public ResponseEntity<?> asociarProducto(@Valid @RequestBody List<Producto> productos, BindingResult result, @PathVariable Long id) {
+
+		if (result.hasErrors()) {
+			return this.validar(result);
+		}
+
+		Optional<Categoria> optionalCategoriaDB = service.findById(id);
+
+		if (optionalCategoriaDB.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		Categoria categoriaDB = optionalCategoriaDB.get();
+		productos.forEach(p -> {
+			categoriaDB.addProducto(p);
+		});
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(categoriaDB));
 	}
 
 	protected ResponseEntity<?> validar(BindingResult result) {
