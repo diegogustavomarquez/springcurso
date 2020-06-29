@@ -39,6 +39,8 @@ public class Producto {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="categoria_id")
 	private Categoria categoria;
+	
+	private int contador;
 
 	@PrePersist
 	public void prePersist() {
